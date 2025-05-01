@@ -1,55 +1,62 @@
 import {
-    Column,
-    CreateDateColumn,
-    Entity,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
-    ManyToOne, // If you want to link back to a User entity
-    JoinColumn, // If you want to link back to a User entity
-  } from 'typeorm';
-  // Assuming you have a User entity, import it if you want the relation
-  // import { User } from '../user/user.entity';
-  
-  @Entity('recipes') // Database table name will be 'recipes'
-  export class Recipe { // Class name is singular 'Recipe'
-    @PrimaryGeneratedColumn()
-    id: number;
-  
-    @Column()
-    user_id: number; // Stores the ID of the user who owns the recipe
-  
-    // Optional: If you have a User entity and want a proper relation
-    // @ManyToOne(() => User) // Define the relationship type
-    // @JoinColumn({ name: 'user_id' }) // Specify the foreign key column name
-    // user: User; // Property to access the related User object
-  
-    @Column()
-    name: string;
-  
-    @Column('text') // Use 'text' for potentially longer descriptions
-    description: string;
-  
-    @Column('text') // Use 'text' for potentially long ingredient lists
-    ingredients: string;
-  
-    @Column('text') // Use 'text' for potentially long instructions
-    instructions: string;
-  
-    @Column({ type: 'int' }) // Explicitly integer type
-    prepTime: number; // in minutes
-  
-    @Column({ type: 'int' }) // Explicitly integer type
-    cookTime: number; // in minutes
-  
-    @Column({ type: 'int', nullable: true }) // Optional field
-    servings?: number;
-  
-    @Column({ type: 'varchar', length: 2048, nullable: true }) // Store URL, nullable
-    imageUrl?: string;
-  
-    @CreateDateColumn()
-    created_at: Date;
-  
-    @UpdateDateColumn()
-    updated_at: Date;
-  }
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+  // ManyToOne, // Uncomment if you implement the User relation
+  // JoinColumn, // Uncomment if you implement the User relation
+} from 'typeorm';
+// import { User } from '../user/user.entity'; // Uncomment if you implement the User relation
+
+@Entity('recipes')
+export class Recipe {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  // Map the 'userId' property (camelCase) to the 'user_id' column (snake_case)
+  @Column({ name: 'user_id' })
+  userId: number;
+
+  // --- Optional User Relation ---
+  // If you uncomment this, @JoinColumn already correctly specifies 'user_id'
+  // @ManyToOne(() => User)
+  // @JoinColumn({ name: 'user_id' })
+  // user: User;
+  // -----------------------------
+
+  @Column()
+  name: string;
+
+  @Column('text')
+  description: string;
+
+  @Column('text')
+  ingredients: string;
+
+  @Column('text')
+  instructions: string;
+
+  // Map the 'prepTime' property to the 'prep_time' column
+  @Column({ type: 'int', name: 'prep_time' })
+  prepTime: number; // Property remains camelCase in your code
+
+  // Map the 'cookTime' property to the 'cook_time' column
+  @Column({ type: 'int', name: 'cook_time' })
+  cookTime: number; // Property remains camelCase in your code
+
+  @Column({ type: 'int', nullable: true }) // Assuming column name is 'servings'
+  servings?: number;
+
+  // Map the 'imageUrl' property to the 'image_url' column
+  @Column({ type: 'varchar', length: 2048, nullable: true, name: 'image_url' })
+  imageUrl?: string; // Property remains camelCase in your code
+
+  // Map the 'createdAt' property (camelCase) to the 'created_at' column (snake_case)
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date; // Changed property name to camelCase for consistency
+
+  // Map the 'updatedAt' property (camelCase) to the 'updated_at' column (snake_case)
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date; // Changed property name to camelCase for consistency
+}
