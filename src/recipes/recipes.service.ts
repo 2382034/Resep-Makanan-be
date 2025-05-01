@@ -16,6 +16,7 @@ export class RecipesService {
    * @returns The saved recipe entity.
    */
   async save(recipe: Recipe): Promise<Recipe> {
+    // No change needed here, TypeORM handles mapping userId -> user_id on save
     return this.recipesRepository.save(recipe);
   }
 
@@ -27,7 +28,7 @@ export class RecipesService {
    * @returns A promise resolving to an array of recipes.
    */
   async findByUserId(
-    userId: number,
+    userIdParam: number, // Renamed parameter to avoid shadowing entity property name
     page: number,
     limit: number,
   ): Promise<Recipe[]> {
@@ -36,11 +37,13 @@ export class RecipesService {
     const take = limit > 0 ? limit : 10; // Default limit if invalid
 
     return await this.recipesRepository.find({
-      where: { user_id: userId },
+      // --- PERBAIKAN DI SINI ---
+      where: { userId: userIdParam }, // Gunakan nama properti entity 'userId'
       skip: skip,
       take: take,
       order: {
-        created_at: 'DESC', // Order by creation date, newest first
+        // --- PERBAIKAN DI SINI ---
+        createdAt: 'DESC', // Gunakan nama properti entity 'createdAt'
       },
     });
   }
@@ -51,11 +54,12 @@ export class RecipesService {
    * @param recipeId The ID of the recipe.
    * @returns The found recipe entity, or null if not found or not owned by the user.
    */
-  async findByUserIdAndRecipeId(userId: number, recipeId: number): Promise<Recipe | null> {
-    // Find one recipe matching both user_id and recipe id
+  async findByUserIdAndRecipeId(userIdParam: number, recipeId: number): Promise<Recipe | null> { // Renamed parameter
+    // Find one recipe matching both userId and recipe id
     const recipe = await this.recipesRepository.findOne({
+      // --- PERBAIKAN DI SINI ---
       where: {
-        user_id: userId,
+        userId: userIdParam, // Gunakan nama properti entity 'userId'
         id: recipeId,
       },
     });
@@ -69,10 +73,9 @@ export class RecipesService {
    * @returns A promise resolving when the deletion is complete.
    */
   async deleteById(recipeId: number): Promise<void> {
+    // No change needed here as it uses 'id' which wasn't renamed
     const result = await this.recipesRepository.delete({ id: recipeId });
-    // Optionally check if any rows were affected, though the controller already verified existence
     if (result.affected === 0) {
-        // This shouldn't happen if the controller logic is correct, but good for robustness
         throw new NotFoundException(`Recipe with ID ${recipeId} could not be deleted (possibly already removed).`);
     }
   }
