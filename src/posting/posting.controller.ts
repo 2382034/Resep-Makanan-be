@@ -3,7 +3,7 @@ import {
     Controller,
     Delete,
     Get,
-    HttpCode, // Import HttpCode decorator
+    
     NotFoundException,
     Param,
     ParseIntPipe,
@@ -126,8 +126,6 @@ import {
     }
   
     @Delete(':id')
-    // @UseGuards(JwtAuthGuard) // Or apply guard per-route
-    @HttpCode(204) // Set success status code to 204 No Content
     @ApiOperation({ summary: 'Delete a posting by ID' })
     @ApiParam({ name: 'id', type: Number, description: 'ID of the posting to delete' })
     @ApiResponse({ status: 204, description: 'Posting deleted successfully (No Content)' })
