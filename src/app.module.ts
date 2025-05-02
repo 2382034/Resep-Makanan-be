@@ -9,6 +9,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { RecipesModule } from './recipes/recipes.module';
+import { PostingsModule } from './postings/posting.module';
 
 @Module({
   imports: [
@@ -33,7 +34,8 @@ import { RecipesModule } from './recipes/recipes.module';
     }),
     AuthModule,
     UserModule,
-    RecipesModule
+    RecipesModule,
+    PostingsModule
   ],
   controllers: [AppController],
   providers: [
